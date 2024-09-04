@@ -33,8 +33,6 @@ type Routing struct {
 
 	userCtrl       *controllers.UserController
 	systemUserCtrl *controllers.SystemUserController
-	//systemAttendanceHolidayCtrl *controllers.SystemAttendanceHolidayController
-	//attendanceCtrl              *controllers.AttendanceController
 }
 
 func NewRouting(
@@ -49,8 +47,6 @@ func NewRouting(
 
 	userCtrl *controllers.UserController,
 	systemUserCtrl *controllers.SystemUserController,
-	//systemAttendanceHolidayCtrl *controllers.SystemAttendanceHolidayController,
-	//attendanceCtrl *controllers.AttendanceController,
 
 ) *Routing {
 
@@ -67,8 +63,6 @@ func NewRouting(
 
 		userCtrl:       userCtrl,
 		systemUserCtrl: systemUserCtrl,
-		//systemAttendanceHolidayCtrl: systemAttendanceHolidayCtrl,
-		//attendanceCtrl:              attendanceCtrl,
 	}
 }
 
@@ -118,51 +112,6 @@ func (r *Routing) Setup() {
 	// `PUT /user/password_change`
 	user.PUT("/password_change", r.userCtrl.PasswordChange)
 
-	//attendance := v1.Group("attendance")
-
-	////勤怠区分取得
-	//// `GET /attendance/classification
-	//attendance.GET("/classification", r.attendanceCtrl.GetClassification)
-	//
-	////勤怠詳細取得
-	//// `GET /attendance/day/{user_id}/{year}/{month}/{day}`
-	//attendance.GET("/day/:user_id/:year/:month/:day", r.attendanceCtrl.GetDay)
-	//
-	//// 勤怠詳細登録
-	//// `POST /attendance/day/{user_id}/{year}/{month}/{day}`
-	//attendance.POST("/day/:user_id/:year/:month/:day", r.attendanceCtrl.PostDay)
-	//
-	//// 勤怠詳細更新
-	//// `PUT /attendance/day/{user_id}/{year}/{month}/{day}`
-	//attendance.PUT("/day/:user_id/:year/:month/:day", r.attendanceCtrl.PutDay)
-	//
-	//// 勤怠詳細削除
-	//// `DELETE /attendance/day/{user_id}/{year}/{month}/{day}`
-	//
-	//attendance.DELETE("/day/:user_id/:year/:month/:day", r.attendanceCtrl.DeleteDay)
-	//
-	//// 勤怠情報勤怠情報初期化
-	//// `POST /attendance/day/initialize/{user_id}/{year}/{month}/{day}`
-	//attendance.POST("/day/initialize/:user_id/:year/:month/:day", r.attendanceCtrl.PostInitializeDay)
-	//
-	//// 勤怠情報一覧
-	//// `GET /attendance/header/month/list/{user_id}`
-	//
-	//attendance.GET("/header/month/list/:userid", r.attendanceCtrl.GetHeaderMonthList)
-	//
-	//// 1ヶ月勤怠情報勤怠情報取得
-	//// `GET /attendance/month/{user_id}/{year}/{month}`
-	//attendance.GET("/month/:user_id/:year/:month", r.attendanceCtrl.GetMonth)
-	//
-	//// 1ヶ月勤怠情報勤怠情報初期化
-	//// `POST /attendance/month/initialize/{user_id}/{year}/{month}`
-	//attendance.POST("/month/initialize/:user_id/:year/:month", r.attendanceCtrl.PostInitializeMonth)
-	//
-	//// 1ヶ月勤怠情報PDF出力
-	//// `GET /attendance/month_pdf/{user_id}/{year}/{month}`
-	//
-	//attendance.GET("/month_pdf/:user_id/:year/:month", r.attendanceCtrl.GetMonthPdf)
-
 	system := v1.Group("system")
 
 	// ユーザ情報登録
@@ -197,37 +146,19 @@ func (r *Routing) Setup() {
 	// `GET /system/user_role/list`
 	systemUserRole.GET("/list", r.systemUserCtrl.GetUserRoleList)
 
-	//systemAttendance := system.Group("attendance")
+	// 静的ファイルを /static 配下で提供
+	r.Gin.Static("/static", "./static")
 
-	//// 休日(年)一覧取得
-	//// `GET /system/attendance/holiday/year/list`
-	//systemAttendance.GET("/holiday/year/list", r.systemAttendanceHolidayCtrl.GetHolidayAllYearList)
-	//
-	//// 休日(公休/指定休日)一覧取得
-	//// `GET /system/attendance/holiday/list`
-	//
-	//systemAttendance.GET("/holiday/list", r.systemAttendanceHolidayCtrl.GetHolidayList)
-	//
-	//// 休日登録
-	//// `POST /system/attendance/holiday`
-	//systemAttendance.POST("/holiday", r.systemAttendanceHolidayCtrl.PostHoliday)
-	//
-	//systemAttendanceHoliday := systemAttendance.Group("holiday")
-	//
-	////// 休日取得
-	//// `GET /system/attendance/holiday`
-	//
-	//systemAttendanceHoliday.GET("/:holiday_id", r.systemAttendanceHolidayCtrl.GetHoliday)
-	//
-	//// 休日更新
-	//// `PUT /system/attendance/holiday`
-	//
-	//systemAttendanceHoliday.PUT("/:holiday_id", r.systemAttendanceHolidayCtrl.PutHoliday)
-	//
-	//// 休日削除
-	//// `DELETE /system/attendance/holiday`
-	//
-	//systemAttendanceHoliday.DELETE("/:holiday_id", r.systemAttendanceHolidayCtrl.DeleteHoliday)
+	// SvelteKitなどのビルドファイルを提供
+	r.Gin.Static("/_app", "./static/_app")
+
+	// favicon.ico を提供
+	r.Gin.StaticFile("/favicon.ico", "./static/favicon.ico")
+
+	// ルートパス "/" で index.html を返す
+	r.Gin.GET("/", func(c *gin.Context) {
+		c.File("./static/index.html")
+	})
 
 	r.Gin.NoRoute(func(c *gin.Context) {
 		messageStr := message.GetMsg(message.ERR006)

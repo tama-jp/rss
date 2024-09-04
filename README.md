@@ -19,7 +19,8 @@ go get -u github.com/BurntSushi/toml@latest
 go get -u github.com/gin-contrib/cors@latest
 go get -u gorm.io/driver/mysql
 
-
-
 ❯ wire ./pkg/wire/wire.go
 ❯ air -c ./pkg/air/.air.toml
+
+>  go build -o rss  ./cmd/app/
+
