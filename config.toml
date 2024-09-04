@@ -1,0 +1,29 @@
+[database]
+data_base = "sqlite"
+file_name = "rss.sqlite3"
+
+#data_base = "postgresql"
+user = "rss"
+host = "localhost"
+password = "rss"
+port = 5432
+name = "rss"
+
+debug = 1
+
+
+[admin]
+user_name = "admin"
+last_name = "admin"
+first_name = "superUser"
+password = "password"
+
+[rooting]
+#port = 8080
+port = 5050
+
+[logger]
+file_name = "./internal/log/logfile.log"
+max_size = 500
+max_backups = 3
+max_age = 28
